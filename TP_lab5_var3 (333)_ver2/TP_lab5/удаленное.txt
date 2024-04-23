@@ -1,0 +1,86 @@
+Tree::Item* Tree::rRemove(Item* rot, const int key, const string dt)
+{
+   if (rot == nullptr) {
+      //если дерево пустое
+      return rot;
+   }
+   //поиск удаляемого узла
+   Item* p, * v;
+   if (key < rot->key) {
+      rot->left = rRemove(rot->left, key, dt);
+   }
+   else if (key > rot->key) {
+      rot->right = rRemove(rot->right, key, dt);
+   }
+   else {
+      if (dt != rot->data)
+      {
+         if (rot->right && rot->right->key == key)
+         {
+            rot->right = rRemove(rot->right, key, dt);
+         }
+         if (rot->left && rot->left->key == key)
+         {
+            rot->left = rRemove(rot->left, key, dt);
+         }
+      }
+      else
+      {
+         //если один потомок
+         if (rot->right == nullptr) {
+            rot = rot->left;
+         }
+         else if (rot->left == nullptr) {
+            rot = rot->right;
+         }
+         else {
+            //у левого узла 2 потомка
+            v = rot->left;
+            //у левого узла есть правый потомок
+            if (v->right) {
+               //поиск самого большого
+               while (v->right->right) {
+                  v = v->right;
+               }
+               //меняем найденное значение с корнем
+               rot->key = v->right->key;
+               rot->data = v->right->data;
+               p = v->right; //удаляемый элемент
+               v->right = v->right->left;
+            }
+            else {
+               //у левого потомка нет правого поддерева
+               rot->data = v->data;
+               rot->key = v->key;
+               p = v;
+               rot->left = rot->left->left;
+            }
+         }
+      }
+      
+   }
+   return rot;
+}
+bool Tree::rInclude(Item* rot, const string dt)
+{
+   if (rot)
+   {
+      if (rot->data == dt)
+      {
+         return true;
+      }
+      if (rInclude(rot->left, dt))
+      {
+         return true;
+      }
+      if (rInclude(rot->right, dt))
+      {
+         return true;
+      }
+      return false;
+   }
+   else
+   {
+      return false;
+   }
+}
